@@ -8,7 +8,24 @@
 import Foundation
 import SwiftUI
 
-struct Exercise: Hashable, Codable {
+struct ExerciseDetailView: View {
+   let exercise: Exercise
+
+   var body: some View {
+       VStack {
+         Text(exercise.name)
+             .font(.title)
+         Text("Sets: \(exercise.sets)")
+         Text("Reps: \(exercise.reps)")
+         Text("Break Time: \(exercise.break_t ?? "Default Value")")
+         Text("Style: \(exercise.style)")
+     }
+     .padding()
+   }
+}
+
+struct Exercise: Hashable, Codable, Identifiable {
+    let id = UUID()
     let name: String
     let sets: Int
     let reps: String
@@ -16,6 +33,7 @@ struct Exercise: Hashable, Codable {
     let style: String
     
 }
+
 
 class ViewModel: ObservableObject {
     @Published var exercises: [Exercise] = []
@@ -50,46 +68,65 @@ class ViewModel: ObservableObject {
 
 struct ContentView: View {
     @StateObject var viewModel = ViewModel()
+    @State private var showingDetail = false
+    @State private var selectedExercise: Exercise? = nil
     
     var body: some View {
-           NavigationView {
-               Group {
-                   if viewModel.isLoading {
-                      ProgressView()
-                   } else {
-                      List(viewModel.exercises, id: \.self) { exercise in
+        NavigationView {
+            Group {
+                if viewModel.isLoading {
+                  ProgressView()
+                } else {
+                  List(viewModel.exercises, id: \.self) { exercise in
+                      Button(action: {
+                          self.selectedExercise = exercise
+                          self.showingDetail = true
+                      }) {
                           HStack {
                               Text(exercise.name)
-                                  .bold()
+                                 .bold()
                           }
-                          .padding(3)
+                          .padding(8)
                       }
-                      .navigationTitle("Exercises")
-                      .onAppear {
-                          viewModel.fetch()
-                      }
-                   }
-    
-    
-//    @StateObject var viewModel = ViewModel()
-//    
-//    var body: some View {
-//        NavigationView {
-//            List {
-//                ForEach(viewModel.exercises, id: \.self) { exercise in
-//                    HStack {
-//                        Text(exercise.name)
-//                            .bold()
-//                    }
-//                    .padding(3)
-//                }
-//            }
-//            .navigationTitle("Exercises")
-//            .onAppear {
-//                viewModel.fetch()
+                  }
+                  .navigationTitle("Exercises")
+                  .onAppear {
+                      viewModel.fetch()
+                  }
+                }
+            }
+            .sheet(item: $selectedExercise) { exercise in
+                ExerciseDetailView(exercise: exercise)
             }
         }
-    }
+}
+        
+        
+        
+        
+        
+//        NavigationView {
+//               Group {
+//                   if viewModel.isLoading {
+//                      ProgressView()
+//                   } else {
+//                      List(viewModel.exercises, id: \.self) { exercise in
+//                          HStack {
+//                              Text(exercise.name)
+//                                  .bold()
+//                          }
+//                          .padding(8)
+//                      }
+//                      .navigationTitle("Exercises")
+//                      .onAppear {
+//                          viewModel.fetch()
+//                      }
+//                   }
+//    
+//
+//            }
+//        }
+//    }
 }
 //        TabView {
 //            HomeView()
