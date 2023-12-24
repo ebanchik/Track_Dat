@@ -70,75 +70,55 @@ struct ContentView: View {
     @StateObject var viewModel = ViewModel()
     @State private var showingDetail = false
     @State private var selectedExercise: Exercise? = nil
+    @State private var selectedTab = 0
     
     var body: some View {
-        NavigationView {
-            Group {
-                if viewModel.isLoading {
-                  ProgressView()
-                } else {
-                  List(viewModel.exercises, id: \.self) { exercise in
-                      Button(action: {
-                          self.selectedExercise = exercise
-                          self.showingDetail = true
-                      }) {
-                          HStack {
-                              Text(exercise.name)
-                                 .bold()
-                          }
-                          .padding(8)
-                      }
-                  }
-                  .navigationTitle("Exercises")
-                  .onAppear {
-                      viewModel.fetch()
-                  }
+        TabView(selection: $selectedTab) {
+            NavigationView {
+                Group {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    } else {
+                        List(viewModel.exercises, id: \.self) { exercise in
+                            Button(action: {
+                                self.selectedExercise = exercise
+                                self.showingDetail = true
+                            }) {
+                                HStack {
+                                    Text(exercise.name)
+                                        .bold()
+                                }
+                                .padding(8)
+                            }
+                        }
+                        .navigationTitle("Exercises")
+                        .onAppear {
+                            viewModel.fetch()
+                        }
+                    }
+                }
+                .sheet(item: $selectedExercise) { exercise in
+                    ExerciseDetailView(exercise: exercise)
                 }
             }
-            .sheet(item: $selectedExercise) { exercise in
-                ExerciseDetailView(exercise: exercise)
+            .tabItem {
+                Label("Content", systemImage: "doc.text")
+            }
+            .tag(0)
+            
+            HomeView()
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+                .tag(1)
+            
+                }
             }
         }
-}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
         
-        
-        
-        
-        
-//        NavigationView {
-//               Group {
-//                   if viewModel.isLoading {
-//                      ProgressView()
-//                   } else {
-//                      List(viewModel.exercises, id: \.self) { exercise in
-//                          HStack {
-//                              Text(exercise.name)
-//                                  .bold()
-//                          }
-//                          .padding(8)
-//                      }
-//                      .navigationTitle("Exercises")
-//                      .onAppear {
-//                          viewModel.fetch()
-//                      }
-//                   }
-//    
-//
-//            }
-//        }
-//    }
-}
-//        TabView {
-//            HomeView()
-//                .tabItem {
-//                    Label("Home", systemImage: "person")
-//                }
-//            
-//        }
-//    }
-    
-    struct ContentView_Previews: PreviewProvider {
-        static var previews: some View {
-            ContentView()
     }
 }
