@@ -8,64 +8,6 @@
 import Foundation
 import SwiftUI
 
-struct ExerciseDetailView: View {
-   let exercise: Exercise
-
-   var body: some View {
-       VStack {
-         Text(exercise.name)
-             .font(.title)
-         Text("Sets: \(exercise.sets)")
-         Text("Reps: \(exercise.reps)")
-         Text("Break Time: \(exercise.break_t ?? "Default Value")")
-         Text("Style: \(exercise.style)")
-     }
-     .padding()
-   }
-}
-
-struct Exercise: Hashable, Codable, Identifiable {
-    let id = UUID()
-    let name: String
-    let sets: Int
-    let reps: String
-    let break_t: String?
-    let style: String
-    
-}
-
-
-class ViewModel: ObservableObject {
-    @Published var exercises: [Exercise] = []
-    @Published var isLoading = false
-    
-    func fetch() {
-        isLoading = true
-        guard let url = URL(string:
-            "http://localhost:3000/exercises.json") else {
-                return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { [weak self]data, _, error in
-            guard let data = data, error == nil else {
-                return
-            }
-            do {
-                let exercises = try JSONDecoder().decode([Exercise].self, from: data)
-                DispatchQueue.main.async {
-                    self?.exercises = exercises
-                }
-            }
-            catch {
-                print(error)
-            }
-        }
-        
-        task.resume()
-        isLoading = false
-    }
-}
-
 struct ContentView: View {
     @StateObject var viewModel = ViewModel()
     @State private var showingDetail = false
@@ -74,6 +16,13 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
+            HomeView()
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+                .tag(0)
+            
+            
             NavigationView {
                 Group {
                     if viewModel.isLoading {
@@ -101,16 +50,10 @@ struct ContentView: View {
                     ExerciseDetailView(exercise: exercise)
                 }
             }
-            .tabItem {
+            .tabItem { 
                 Label("Content", systemImage: "doc.text")
             }
-            .tag(0)
-            
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-                .tag(1)
+            .tag(1)
             
                 }
             }
