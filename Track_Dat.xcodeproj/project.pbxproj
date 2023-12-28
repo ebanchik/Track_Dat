@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E50CE2E2B3B7DD20020BFF2 /* SplitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E50CE2D2B3B7DD20020BFF2 /* SplitsViewModel.swift */; };
 		2EB0A27A2B35568500286CA1 /* Track_DatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB0A2792B35568500286CA1 /* Track_DatApp.swift */; };
 		2EB0A27C2B35568500286CA1 /* LaunchPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB0A27B2B35568500286CA1 /* LaunchPage.swift */; };
 		2EB0A27E2B35568600286CA1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EB0A27D2B35568600286CA1 /* Assets.xcassets */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E50CE2D2B3B7DD20020BFF2 /* SplitsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SplitsViewModel.swift; path = "Track Dat/SplitsViewModel.swift"; sourceTree = SOURCE_ROOT; };
 		2EB0A2762B35568500286CA1 /* Track Dat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Track Dat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB0A2792B35568500286CA1 /* Track_DatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track_DatApp.swift; sourceTree = "<group>"; };
 		2EB0A27B2B35568500286CA1 /* LaunchPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchPage.swift; sourceTree = "<group>"; };
@@ -52,7 +54,7 @@
 		2ECE31C82B3632D200D9830A /* CircleImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleImage.swift; sourceTree = "<group>"; };
 		2ECE31CA2B363A6B00D9830A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		2ECE31CC2B363C5600D9830A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		2ECE31D02B38C00D00D9830A /* SplitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitsView.swift; sourceTree = "<group>"; };
+		2ECE31D02B38C00D00D9830A /* SplitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SplitsView.swift; path = "Track Dat/SplitsView.swift"; sourceTree = SOURCE_ROOT; };
 		2ECE31D22B38C0ED00D9830A /* ExercisesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -108,6 +110,7 @@
 				2ECE31CC2B363C5600D9830A /* ContentView.swift */,
 				2ECE31D22B38C0ED00D9830A /* ExercisesView.swift */,
 				2ECE31D02B38C00D00D9830A /* SplitsView.swift */,
+				2E50CE2D2B3B7DD20020BFF2 /* SplitsViewModel.swift */,
 				2ECE31CA2B363A6B00D9830A /* HomeView.swift */,
 				2EB0A27B2B35568500286CA1 /* LaunchPage.swift */,
 				2EB0A27D2B35568600286CA1 /* Assets.xcassets */,
@@ -221,7 +224,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2EB0A2712B35568500286CA1 /* Build configuration list for PBXProject "Track Dat" */;
+			buildConfigurationList = 2EB0A2712B35568500286CA1 /* Build configuration list for PBXProject "Track_Dat" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -275,6 +278,7 @@
 				2EB0A27C2B35568500286CA1 /* LaunchPage.swift in Sources */,
 				2ECE31D12B38C00D00D9830A /* SplitsView.swift in Sources */,
 				2ECE31CD2B363C5600D9830A /* ContentView.swift in Sources */,
+				2E50CE2E2B3B7DD20020BFF2 /* SplitsViewModel.swift in Sources */,
 				2ECE31CB2B363A6B00D9830A /* HomeView.swift in Sources */,
 				2EB0A27A2B35568500286CA1 /* Track_DatApp.swift in Sources */,
 				2ECE31D32B38C0ED00D9830A /* ExercisesView.swift in Sources */,
@@ -565,7 +569,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2EB0A2712B35568500286CA1 /* Build configuration list for PBXProject "Track Dat" */ = {
+		2EB0A2712B35568500286CA1 /* Build configuration list for PBXProject "Track_Dat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2EB0A2982B35568700286CA1 /* Debug */,

@@ -26,15 +26,32 @@ struct ExerciseDetailView: View {
 }
 
 struct Exercise: Hashable, Codable, Identifiable {
-    var id = UUID()
-    let name: String
-    let sets: Int
-    let reps: String
-    let break_t: String?
-    let style: String
-    
-}
+   let id: UUID
+   let name: String
+   let sets: Int
+   let reps: String
+   let break_t: String?
+   let style: String
 
+   enum CodingKeys: String, CodingKey {
+       case id
+       case name
+       case sets
+       case reps
+       case break_t
+       case style
+   }
+
+   init(from decoder: Decoder) throws {
+       let container = try decoder.container(keyedBy: CodingKeys.self)
+       id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+       name = try container.decode(String.self, forKey: .name)
+       sets = try container.decode(Int.self, forKey: .sets)
+       reps = try container.decode(String.self, forKey: .reps)
+       break_t = try container.decodeIfPresent(String.self, forKey: .break_t)
+       style = try container.decode(String.self, forKey: .style)
+   }
+}
 
 class ViewModel: ObservableObject {
     @Published var exercises: [Exercise] = []
@@ -65,4 +82,42 @@ class ViewModel: ObservableObject {
         task.resume()
         isLoading = false
     }
+}
+
+struct ExercisesListView: View {
+ @EnvironmentObject var viewModel: ViewModel
+ @State private var selectedExercise: Exercise? = nil
+ @State private var showingDetail = false
+
+ public var body: some View {
+ NavigationView {
+     Group {
+         if viewModel.isLoading {
+             ProgressView()
+         } else {
+             List(viewModel.exercises, id: \.self) { exercise in
+                Button(action: {
+                   self.selectedExercise = exercise
+                   self.showingDetail = true
+                }) {
+                   HStack {
+                       Text(exercise.name)
+                           .bold()
+                   }
+                   .padding(8)
+                }
+             }
+             .navigationTitle("Exercises")
+             .onAppear {
+                if !ProcessInfo.processInfo.arguments.contains("-ui_testing") {
+                   viewModel.fetch()
+                }
+             }
+         }
+     }
+     .sheet(item: $selectedExercise) { exercise in
+         ExerciseDetailView(exercise: exercise)
+     }
+ }
+ }
 }
