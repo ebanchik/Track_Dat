@@ -89,35 +89,35 @@ struct ExercisesListView: View {
  @State private var selectedExercise: Exercise? = nil
  @State private var showingDetail = false
 
- public var body: some View {
- NavigationView {
-     Group {
-         if viewModel.isLoading {
-             ProgressView()
-         } else {
-             List(viewModel.exercises, id: \.self) { exercise in
-                Button(action: {
-                   self.selectedExercise = exercise
-                   self.showingDetail = true
-                }) {
-                   HStack {
-                       Text(exercise.name)
-                           .bold()
+    public var body: some View {
+     NavigationView {
+        Group {
+            if viewModel.isLoading {
+                ProgressView()
+            } else {
+                List(viewModel.exercises, id: \.self) { exercise in
+                   Button(action: {
+                     self.selectedExercise = exercise
+                     self.showingDetail = true
+                   }) {
+                     HStack {
+                         Text(exercise.name)
+                             .bold()
+                     }
+                     .padding(8)
                    }
-                   .padding(8)
                 }
-             }
-             .navigationTitle("Exercises")
-             .onAppear {
-                if !ProcessInfo.processInfo.arguments.contains("-ui_testing") {
-                   viewModel.fetch()
+                .navigationTitle("Exercises")
+                .onAppear {
+                   if !ProcessInfo.processInfo.arguments.contains("-ui_testing") {
+                     viewModel.fetch()
+                   }
                 }
-             }
-         }
+            }
+        }
+        .sheet(item: $selectedExercise) { exercise in
+            ExerciseDetailView(exercise: exercise)
+        }
      }
-     .sheet(item: $selectedExercise) { exercise in
-         ExerciseDetailView(exercise: exercise)
      }
- }
- }
-}
+    }

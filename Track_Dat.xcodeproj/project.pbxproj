@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E437BBE2B3D2E060078F7EB /* SplitsLandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E437BBD2B3D2E060078F7EB /* SplitsLandingPage.swift */; };
 		2E50CE2E2B3B7DD20020BFF2 /* SplitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E50CE2D2B3B7DD20020BFF2 /* SplitsViewModel.swift */; };
 		2EB0A27A2B35568500286CA1 /* Track_DatApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB0A2792B35568500286CA1 /* Track_DatApp.swift */; };
 		2EB0A27C2B35568500286CA1 /* LaunchPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB0A27B2B35568500286CA1 /* LaunchPage.swift */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2E437BBD2B3D2E060078F7EB /* SplitsLandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitsLandingPage.swift; sourceTree = SOURCE_ROOT; };
 		2E50CE2D2B3B7DD20020BFF2 /* SplitsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SplitsViewModel.swift; path = "Track Dat/SplitsViewModel.swift"; sourceTree = SOURCE_ROOT; };
 		2EB0A2762B35568500286CA1 /* Track Dat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Track Dat.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EB0A2792B35568500286CA1 /* Track_DatApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track_DatApp.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				2ECE31D22B38C0ED00D9830A /* ExercisesView.swift */,
 				2ECE31D02B38C00D00D9830A /* SplitsView.swift */,
 				2E50CE2D2B3B7DD20020BFF2 /* SplitsViewModel.swift */,
+				2E437BBD2B3D2E060078F7EB /* SplitsLandingPage.swift */,
 				2ECE31CA2B363A6B00D9830A /* HomeView.swift */,
 				2EB0A27B2B35568500286CA1 /* LaunchPage.swift */,
 				2EB0A27D2B35568600286CA1 /* Assets.xcassets */,
@@ -280,6 +283,7 @@
 				2ECE31CD2B363C5600D9830A /* ContentView.swift in Sources */,
 				2E50CE2E2B3B7DD20020BFF2 /* SplitsViewModel.swift in Sources */,
 				2ECE31CB2B363A6B00D9830A /* HomeView.swift in Sources */,
+				2E437BBE2B3D2E060078F7EB /* SplitsLandingPage.swift in Sources */,
 				2EB0A27A2B35568500286CA1 /* Track_DatApp.swift in Sources */,
 				2ECE31D32B38C0ED00D9830A /* ExercisesView.swift in Sources */,
 				2ECE31C92B3632D200D9830A /* CircleImage.swift in Sources */,
