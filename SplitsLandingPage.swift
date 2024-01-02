@@ -2,94 +2,38 @@ import Foundation
 import SwiftUI
 
 struct SplitsLandingPageView: View {
- @State private var selectedSplit: Splits = .upper1
-
+ @ObservedObject var splitsViewModel = SplitsViewModel()
 
  var body: some View {
-    ZStack {
-        Color(UIColor.systemGroupedBackground) // Change this to your desired color
-            .ignoresSafeArea()
-        
-        VStack {
-            Text("Select a split")
-                .font(.largeTitle)
-                .padding()
+   ZStack {
+       Color(UIColor.systemGroupedBackground) // Change this to your desired color
+           .ignoresSafeArea()
 
-            HStack {
-                Button(action: {
-                 self.selectedSplit = .upper1
-                }) {
-                 Text("Upper 1")
-                    .padding()
-                    .background(Color.white)
-                    .foregroundColor(.blue)
-                    .cornerRadius(10)
-                }
-                
-                Button(action: {
-                 self.selectedSplit = .upper2
-                }) {
-                 Text("Upper 2")
-                    .padding()
-                    .background(Color.white)
-                    .foregroundColor(.blue)
-                    .cornerRadius(10)
-                }
-            }
+       VStack {
+           Text("Current Split")
+               .font(.largeTitle).bold()
+               .padding()
 
-            HStack {
-                Button(action: {
-                 self.selectedSplit = .shoulders
-                }) {
-                 Text("Shoulders")
-                    .padding()
-                    .background(Color.white)
-                    .foregroundColor(.blue)
-                    .cornerRadius(10)
-                }
-                
-                Button(action: {
-                 self.selectedSplit = .legs
-                }) {
-                 Text("Legs")
-                    .padding()
-                    .background(Color.white)
-                    .foregroundColor(.blue)
-                    .cornerRadius(10)
-                }
-            }
-            
-            // Use a switch statement to present the correct view based on the selectedSplit variable
-            switch selectedSplit {
-            case .upper1:
-                Text("Upper 1 Exercises")
-                  .font(.system(size:24))
-                 .padding()
-                 .offset(y:20)
-                 .underline()
-                Upper1ListView()
-            case .upper2:
-                Text("Upper 2 Exercises")
-                  .font(.system(size:24))
-                 .padding()
-                 .underline()
-                Upper2ListView()
-            case .shoulders:
-                Text("Shoulders Exercises")
-                  .font(.system(size:24))
-                 .padding()
-                 .underline()
-                ShouldersListView()
-            case .legs:
-                Text("Legs Exercises")
-                  .font(.system(size:24))
-                 .padding()
-                 .underline()
-                LegsListView()
-            default:
-                EmptyView()
-            }
-        }
-    }
+           List {
+               NavigationLink(destination: Upper1ListView()) {
+                   Text("Upper 1").bold()
+               }
+
+               NavigationLink(destination: Upper2ListView()) {
+                  Text("Upper 2").bold()
+               }
+
+               NavigationLink(destination: ShouldersListView()) {
+                  Text("Shoulders").bold()
+               }
+
+               NavigationLink(destination: LegsListView()) {
+                  Text("Legs").bold()
+               }
+           }
+           .offset(y:-30)
+       }
+   }
+   .environmentObject(splitsViewModel)
  }
 }
