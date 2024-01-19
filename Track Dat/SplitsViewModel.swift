@@ -209,6 +209,33 @@ public class SplitsViewModel: ObservableObject {
         task.resume()
         isLoading = false
     }
+    
+    func deleteExercise(_ exercise: Upper1) {
+       if let index = upper1.firstIndex(where: { $0.id == exercise.id }) {
+           upper1.remove(at: index)
+       }
+
+       guard let url = URL(string: "http://localhost:3000/upper1/\(exercise.id.uuidString).json") else {
+           return
+       }
+
+       var request = URLRequest(url: url)
+       request.httpMethod = "DELETE"
+
+       let task = URLSession.shared.dataTask(with: request) { data, response, error in
+           if let error = error {
+               print("Error: \(error)")
+           } else if let response = response as? HTTPURLResponse, response.statusCode != 200 {
+               print("Non-200 status code: \(response.statusCode)")
+           } else {
+               print("Successfully deleted exercise from database.")
+           }
+       }
+
+       task.resume()
+    }
+
+    
 }
 
 struct Upper1DetailView: View {

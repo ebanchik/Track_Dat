@@ -25,40 +25,41 @@ struct ExerciseDetailView: View {
 }
 
 struct Exercise: Hashable, Codable, Identifiable {
-  let id: UUID
-  let name: String
-  let sets: Int
-  let reps: String
-  let break_t: String?
-  let style: String
+ let id: Int
+ let name: String
+ let sets: Int
+ let reps: String
+ let break_t: String?
+ let style: String
 
-  enum CodingKeys: String, CodingKey {
-      case id
-      case name
-      case sets
-      case reps
-      case break_t
-      case style
-  }
+ enum CodingKeys: String, CodingKey {
+     case id
+     case name
+     case sets
+     case reps
+     case break_t
+     case style
+ }
 
-  init(from decoder: Decoder) throws {
-      let container = try decoder.container(keyedBy: CodingKeys.self)
-      id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
-      name = try container.decode(String.self, forKey: .name)
-      sets = try container.decode(Int.self, forKey: .sets)
-      reps = try container.decode(String.self, forKey: .reps)
-      break_t = try container.decodeIfPresent(String.self, forKey: .break_t)
-      style = try container.decode(String.self, forKey: .style)
-  }
-   init(id: UUID, name: String, sets: Int, reps: String, break_t: String?, style: String) {
-           self.id = id
-           self.name = name
-           self.sets = sets
-           self.reps = reps
-           self.break_t = break_t
-           self.style = style
-       }
+ init(from decoder: Decoder) throws {
+     let container = try decoder.container(keyedBy: CodingKeys.self)
+     id = try container.decode(Int.self, forKey: .id)
+     name = try container.decode(String.self, forKey: .name)
+     sets = try container.decode(Int.self, forKey: .sets)
+     reps = try container.decode(String.self, forKey: .reps)
+     break_t = try container.decodeIfPresent(String.self, forKey: .break_t)
+     style = try container.decode(String.self, forKey: .style)
+ }
+  init(id: Int, name: String, sets: Int, reps: String, break_t: String?, style: String) {
+          self.id = id
+          self.name = name
+          self.sets = sets
+          self.reps = reps
+          self.break_t = break_t
+          self.style = style
+      }
 }
+
 
 class ViewModel: ObservableObject {
    @Published var exercises: [Exercise] = []
@@ -99,84 +100,123 @@ class ViewModel: ObservableObject {
    }
    
    // Sends a new exercise to the Rails API and adds it to the local list upon success
-   public func addExerciseToAPI(exercise: Exercise) {
-       guard let url = URL(string: "http://localhost:3000/exercises") else {
-           print("Invalid URL")
-           return
-       }
-   
-       var request = URLRequest(url: url)
-       request.httpMethod = "POST"
-       request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-   
-       do {
-           let jsonData = try JSONEncoder().encode(exercise)
-           request.httpBody = jsonData
-   
-           URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-               if let data = data {
-                  if let responseExercise = try? JSONDecoder().decode(Exercise.self, from: data) {
-                      DispatchQueue.main.async {
-                          // Update your UI or model accordingly
-                          self?.fetch()
-                      }
-                  } else {
-                      print("Invalid response from server")
-                  }
-               } else if let error = error {
-                  print("HTTP Request Failed \(error)")
-               }
-           }.resume()
-       } catch {
-           print("Failed to encode exercise: \(error)")
-       }
-   }
+    public func addExerciseToAPI(exercise: Exercise) {
+     guard let url = URL(string: "http://localhost:3000/exercises") else {
+         print("Invalid URL")
+         return
+     }
+
+     var request = URLRequest(url: url)
+     request.httpMethod = "POST"
+     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+     do {
+         let jsonData = try JSONEncoder().encode(exercise)
+         request.httpBody = jsonData
+
+         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+             if let data = data {
+                 if let newExercise = try? JSONDecoder().decode(Exercise.self, from: data) {
+                    DispatchQueue.main.async {
+                       // Update your UI or model accordingly
+                       self?.fetch()
+                       self?.addExercise(newExercise)
+                    }
+                 } else {
+                    print("Invalid response from server")
+                 }
+             } else if let error = error {
+                 print("HTTP Request Failed \(error)")
+             }
+         }.resume()
+     } catch {
+         print("Failed to encode exercise: \(error)")
+     }
+    }
+
+    
+    func removeExercise(_ exercise: Exercise) {
+      // Remove the exercise from the local array
+      if let index = exercises.firstIndex(where: { $0.id == exercise.id }) {
+          exercises.remove(at: index)
+      }
+      
+      // Send a DELETE request to the Rails API
+      guard let url = URL(string: "http://localhost:3000/exercises/\(exercise.id)") else {
+          return
+      }
+      
+      var request = URLRequest(url: url)
+      request.httpMethod = "DELETE"
+      
+      let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          if let error = error {
+              print("Error: \(error)")
+          } else if let response = response as? HTTPURLResponse, response.statusCode != 200 {
+              print("Non-200 status code: \(response.statusCode)")
+          } else {
+              print("Successfully deleted exercise from database.")
+          }
+      }
+      
+      task.resume()
+    }
+
 }
 
 struct ExercisesListView: View {
-   @EnvironmentObject var viewModel: ViewModel
-   @State private var selectedExercise: Exercise? = nil
-   @State private var showingDetail = false
-   
-   var body: some View {
-       NavigationView {
-           Group {
-               if viewModel.isLoading {
-                  ProgressView()
-               } else {
-                  List(viewModel.exercises, id: \.self) { exercise in
-                      Button(action: {
-                          self.selectedExercise = exercise
-                          self.showingDetail = true
-                      }) {
-                          HStack {
-                              Text(exercise.name)
-                                 .bold()
-                          }
-                          .padding(8)
-                      }
-                  }
-                  .navigationTitle("Exercises")
-                  .onAppear {
-                      if !ProcessInfo.processInfo.arguments.contains("-ui_testing") {
-                          viewModel.fetch()
-                      }
-                  }
-               }
+  @EnvironmentObject var viewModel: ViewModel
+  @State private var selectedExercise: Exercise? = nil
+  @State private var showingDetail = false
+  
+  var body: some View {
+      NavigationView {
+          Group {
+              if viewModel.isLoading {
+                ProgressView()
+              } else {
+                List {
+                    ForEach(viewModel.exercises, id: \.self) { exercise in
+                        Button(action: {
+                            self.selectedExercise = exercise
+                            self.showingDetail = true
+                        }) {
+                            HStack {
+                               Text(exercise.name)
+                                  .bold()
+                            }
+                            .padding(8)
+                        }
+                    }
+                    .onDelete(perform: deleteExercises)
+                }
+                .navigationTitle("Exercises")
+                .onAppear {
+                    if !ProcessInfo.processInfo.arguments.contains("-ui_testing") {
+                        viewModel.fetch()
+                    }
+                }
+              }
+          }
+          .sheet(item: $selectedExercise) { exercise in
+              ExerciseDetailView(exercise: exercise)
+          }
+          NavigationLink(destination: AddExerciseView().environmentObject(viewModel)) {
+              Image(systemName: "plus")
+                .font(.largeTitle)
+                .padding()
+          }
+          .accentColor(.white)
+          .background(Color.green)
            }
-           .sheet(item: $selectedExercise) { exercise in
-               ExerciseDetailView(exercise: exercise)
-           }
-           NavigationLink(destination: AddExerciseView().environmentObject(viewModel)) {
-               Image(systemName: "plus")
-                  .font(.largeTitle)
-                  .padding()
-           }
-           .accentColor(.white)
-           .background(Color.green)
-            }
-        }
+       }
+    func deleteExercises(offsets: IndexSet) {
+      offsets.forEach { index in
+          let exercise = viewModel.exercises[index]
+          viewModel.removeExercise(exercise)
+      }
     }
+   }
     
 struct AddExerciseView: View {
     @EnvironmentObject var viewModel: ViewModel
@@ -197,7 +237,7 @@ struct AddExerciseView: View {
             
             Button("Save") {
                 if let setsInt = Int(sets) { // Attempt to convert the `sets` String to an Int
-                    let exercise = Exercise(id: UUID(), name: name, sets: setsInt, reps: reps, break_t: breakTime, style: style)
+                    let exercise = Exercise(id: 0, name: name, sets: setsInt, reps: reps, break_t: breakTime, style: style)
                     viewModel.addExerciseToAPI(exercise: exercise)
                     
                     name = ""
