@@ -1,230 +1,254 @@
-//
-//  SplitsViewModel.swift
-//  Track Dat
-//
-//  Created by Eli Banchik on 12/26/23.
-//
-
 import Foundation
 import Combine
 import SwiftUI
 
-public struct Upper1: Codable, Identifiable, Hashable {
- public var id = 0
- var name: String
- var sets: Int
- var reps: String
- var break_t: String?
- var style: String
- 
- enum CodingKeys: String, CodingKey {
-     case id, name, sets, reps, break_t, style
- }
- 
- public init(from decoder: Decoder) throws {
-     let container = try decoder.container(keyedBy: CodingKeys.self)
-     id = try container.decode(Int.self, forKey: .id)
-     name = try container.decode(String.self, forKey: .name)
-     sets = try container.decode(Int.self, forKey: .sets)
-     reps = try container.decode(String.self, forKey: .reps)
-     break_t = try container.decode(String?.self, forKey: .break_t)
-     style = try container.decode(String.self, forKey: .style)
- }
+enum ExerciseCategory: Codable {
+    case upper1
+    case upper2
+    case shoulders
+    case legs
 }
 
-public struct Upper2: Codable, Identifiable, Hashable {
- public var id = 0
- var name: String
- var sets: Int
- var reps: String
- var break_t: String?
- var style: String
- 
- enum CodingKeys: String, CodingKey {
-     case id, name, sets, reps, break_t, style
- }
- 
- public init(from decoder: Decoder) throws {
-     let container = try decoder.container(keyedBy: CodingKeys.self)
-     id = try container.decode(Int.self, forKey: .id)
-     name = try container.decode(String.self, forKey: .name)
-     sets = try container.decode(Int.self, forKey: .sets)
-     reps = try container.decode(String.self, forKey: .reps)
-     break_t = try container.decode(String?.self, forKey: .break_t)
-     style = try container.decode(String.self, forKey: .style)
- }
-}
+class SplitsViewModel: ObservableObject {
+    @Published var upper1Exercises: [Exercise] = []
+    @Published var upper2Exercises: [Exercise] = []
+    @Published var shouldersExercises: [Exercise] = []
+    @Published var legsExercises: [Exercise] = []
 
-public struct Legs: Codable, Identifiable, Hashable {
- public var id = 0
- var name: String
- var sets: Int
- var reps: String
- var break_t: String?
- var style: String
- 
- enum CodingKeys: String, CodingKey {
-     case id, name, sets, reps, break_t, style
- }
- 
- public init(from decoder: Decoder) throws {
-     let container = try decoder.container(keyedBy: CodingKeys.self)
-     id = try container.decode(Int.self, forKey: .id)
-     name = try container.decode(String.self, forKey: .name)
-     sets = try container.decode(Int.self, forKey: .sets)
-     reps = try container.decode(String.self, forKey: .reps)
-     break_t = try container.decode(String?.self, forKey: .break_t)
-     style = try container.decode(String.self, forKey: .style)
- }
-}
-
-public struct Shoulders: Codable, Identifiable, Hashable {
- public var id = 0
- var name: String
- var sets: Int
- var reps: String
- var break_t: String?
- var style: String
- 
- enum CodingKeys: String, CodingKey {
-     case id, name, sets, reps, break_t, style
- }
- 
- public init(from decoder: Decoder) throws {
-     let container = try decoder.container(keyedBy: CodingKeys.self)
-     id = try container.decode(Int.self, forKey: .id)
-     name = try container.decode(String.self, forKey: .name)
-     sets = try container.decode(Int.self, forKey: .sets)
-     reps = try container.decode(String.self, forKey: .reps)
-     break_t = try container.decode(String?.self, forKey: .break_t)
-     style = try container.decode(String.self, forKey: .style)
- }
-}
-            
-                
-import Foundation
-import Combine
-import SwiftUI
-
-public class SplitsViewModel: ObservableObject {
- @Published var upper1: [Upper1] = []
- @Published var upper2: [Upper2] = []
- @Published var legs: [Legs] = []
- @Published var shoulders: [Shoulders] = []
-}
-
-struct Upper1DetailView: View {
- let exercise: Upper1
-
- var body: some View {
- VStack {
-     Text(exercise.name)
-         .font(.title)
-     Text("Sets: \(exercise.sets)")
-     Text("Reps: \(exercise.reps)")
-     Text("Break Time: \(exercise.break_t ?? "Default Value")")
-     Text("Style: \(exercise.style)")
- }
- .padding()
- }
-}
-
-struct Upper2DetailView: View {
- let exercise: Upper2
-
- var body: some View {
- VStack {
-     Text(exercise.name)
-         .font(.title)
-     Text("Sets: \(exercise.sets)")
-     Text("Reps: \(exercise.reps)")
-     Text("Break Time: \(exercise.break_t ?? "Default Value")")
-     Text("Style: \(exercise.style)")
- }
- .padding()
- }
-}
-
-struct LegsDetailView: View {
- let exercise: Legs
-
- var body: some View {
- VStack {
-     Text(exercise.name)
-         .font(.title)
-     Text("Sets: \(exercise.sets)")
-     Text("Reps: \(exercise.reps)")
-     Text("Break Time: \(exercise.break_t ?? "Default Value")")
-     Text("Style: \(exercise.style)")
- }
- .padding()
- }
-}
-
-struct ShouldersDetailView: View {
- let exercise: Shoulders
-
- var body: some View {
- VStack {
-     Text(exercise.name)
-         .font(.title)
-     Text("Sets: \(exercise.sets)")
-     Text("Reps: \(exercise.reps)")
-     Text("Break Time: \(exercise.break_t ?? "Default Value")")
-     Text("Style: \(exercise.style)")
- }
- .padding()
- }
+    
+    func addExercise(_ exercise: Exercise, to category: ExerciseCategory) {
+        switch category {
+        case .upper1:
+            upper1Exercises.append(exercise)
+        case .upper2:
+            upper2Exercises.append(exercise)
+        case .shoulders:
+            shouldersExercises.append(exercise)
+        case .legs:
+            legsExercises.append(exercise)
+        }
+    }
+    
+    func exercises(for category: ExerciseCategory) -> [Exercise] {
+            switch category {
+            case .upper1:
+                return upper1Exercises
+            case .upper2:
+                return upper2Exercises
+            case .shoulders:
+                return shouldersExercises
+            case .legs:
+                return legsExercises
+            }
+        }
+    
+    func deleteExercise(at offsets: IndexSet, from category: ExerciseCategory) {
+            switch category {
+            case .upper1:
+                upper1Exercises.remove(atOffsets: offsets)
+            case .upper2:
+                upper2Exercises.remove(atOffsets: offsets)
+            case .shoulders:
+                shouldersExercises.remove(atOffsets: offsets)
+            case .legs:
+                legsExercises.remove(atOffsets: offsets)
+            }
+        }
 }
 
 struct Upper1ListView: View {
- @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @EnvironmentObject var viewModel: ViewModel
+    @State private var showingAddExercisesView = false
 
- public var body: some View {
- List(splitsViewModel.upper1) { upper1 in
-     NavigationLink(destination: Upper1DetailView(exercise: upper1)) {
-         Text(upper1.name)
-     }
- }
- .navigationTitle("Upper 1")
- }
-}
+    var body: some View {
+        List {
+            ForEach(splitsViewModel.upper1Exercises, id: \.id) { exercise in
+                HStack {
+                    Spacer() // Push content to center
+                    ExerciseDetailView(exercise: exercise)
+                        .multilineTextAlignment(.center)
+                    Spacer() // Push content to center
+                }
+            }
+            .onDelete { offsets in
+                splitsViewModel.deleteExercise(at: offsets, from: .upper1)
+            }
+        }
+        .navigationTitle("Upper 1 Exercises")
+        .toolbar {
+            Button("Add Exercise") {
+                showingAddExercisesView = true
+            }
+        }
+        .sheet(isPresented: $showingAddExercisesView) {
+                    NavigationView {
+                        AddExercisesView(isShowing: $showingAddExercisesView, category: .upper1)
+                            .navigationTitle("Exercise Bank")
+                            .navigationBarTitleDisplayMode(.inline)
+                    }
+                    .environmentObject(splitsViewModel)
+                    .environmentObject(viewModel)
+                }
+            }
+        }
+
+
+
+
 
 struct Upper2ListView: View {
- @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @EnvironmentObject var viewModel: ViewModel
+    @State private var showingAddExercisesView = false
 
- public var body: some View {
- List(splitsViewModel.upper2) { upper2 in
-     NavigationLink(destination: Upper2DetailView(exercise: upper2)) {
-         Text(upper2.name)
-     }
- }
- .navigationTitle("Upper 2")
- }
+    var body: some View {
+        List {
+            ForEach(splitsViewModel.exercises(for: .upper2), id: \.id) { exercise in
+                HStack {
+                    Spacer() // Push content to center
+                    ExerciseDetailView(exercise: exercise)
+                        .multilineTextAlignment(.center)
+                    Spacer() // Push content to center
+                }
+            }
+            .onDelete { offsets in
+                splitsViewModel.deleteExercise(at: offsets, from: .upper2)
+            }
+        }
+        .navigationTitle("Upper 2 Exercises")
+        .toolbar {
+            Button("Add Exercise") {
+                showingAddExercisesView = true
+            }
+        }
+        .sheet(isPresented: $showingAddExercisesView) {
+            AddExercisesView(isShowing: $showingAddExercisesView, category: .upper2)
+                .environmentObject(splitsViewModel)
+                .environmentObject(viewModel)
+        }
+    }
 }
 
-struct LegsListView: View {
- @EnvironmentObject var splitsViewModel: SplitsViewModel
 
- public var body: some View {
- List(splitsViewModel.legs) { legs in
-     NavigationLink(destination: LegsDetailView(exercise: legs)) {
-         Text(legs.name)
-     }
- }
- .navigationTitle("Legs")
- }
-}
+
+
+
 
 struct ShouldersListView: View {
- @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @EnvironmentObject var viewModel: ViewModel
+    @State private var showingAddExercisesView = false
 
- public var body: some View {
- List(splitsViewModel.shoulders) { shoulders in
-     NavigationLink(destination: ShouldersDetailView(exercise: shoulders)) {
-         Text(shoulders.name)
-     }
- }
- .navigationTitle("Shoulders")
- }
+    var body: some View {
+        List {
+            ForEach(splitsViewModel.exercises(for: .shoulders), id: \.id) { exercise in
+                HStack {
+                    Spacer() // Push content to center
+                    ExerciseDetailView(exercise: exercise)
+                        .multilineTextAlignment(.center)
+                    Spacer() // Push content to center
+                }
+            }
+            .onDelete { offsets in
+                splitsViewModel.deleteExercise(at: offsets, from: .shoulders)
+            }
+        }
+        .navigationTitle("Shoulders Exercises")
+        .toolbar {
+            Button("Add Exercise") {
+                showingAddExercisesView = true
+            }
+        }
+        .sheet(isPresented: $showingAddExercisesView) {
+            AddExercisesView(isShowing: $showingAddExercisesView, category: .shoulders)
+                .environmentObject(splitsViewModel)
+                .environmentObject(viewModel)
+        }
+    }
+}
+
+
+
+
+
+struct LegsListView: View {
+    @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @EnvironmentObject var viewModel: ViewModel
+    @State private var showingAddExercisesView = false
+
+    var body: some View {
+        List {
+            ForEach(splitsViewModel.exercises(for: .legs), id: \.id) { exercise in
+                HStack {
+                    Spacer() // Push content to center
+                    ExerciseDetailView(exercise: exercise)
+                        .multilineTextAlignment(.center)
+                    Spacer() // Push content to center
+                }
+            }
+            .onDelete { offsets in
+                splitsViewModel.deleteExercise(at: offsets, from: .legs)
+            }
+        }
+        .navigationTitle("Legs Exercises")
+        .toolbar {
+            Button("Add Exercise") {
+                showingAddExercisesView = true
+            }
+        }
+        .sheet(isPresented: $showingAddExercisesView) {
+            AddExercisesView(isShowing: $showingAddExercisesView, category: .legs)
+                .environmentObject(splitsViewModel)
+                .environmentObject(viewModel)
+        }
+    }
+}
+
+
+//struct ExerciseSelectionView: View {
+//    @EnvironmentObject var viewModel: ViewModel  // Assuming ViewModel contains all exercises
+//    @EnvironmentObject var splitsViewModel: SplitsViewModel
+//
+//    var body: some View {
+//        List(viewModel.exercises, id: \.id) { exercise in
+//            Button(exercise.name) {
+//                splitsViewModel.addExercise(exercise, to: .upper1)
+//            }
+//        }
+//        .navigationTitle("Select Exercises")
+//    }
+//}
+
+
+struct AddExercisesView: View {
+    @EnvironmentObject var viewModel: ViewModel
+    @EnvironmentObject var splitsViewModel: SplitsViewModel
+    @Binding var isShowing: Bool
+    var category: ExerciseCategory
+
+    var body: some View {
+        VStack {
+            
+            List(viewModel.exercises, id: \.id) { exercise in
+                Button(action: {
+                    splitsViewModel.addExercise(exercise, to: category)
+                    isShowing = false
+                }) {
+                    Text(exercise.name)
+                }
+            }
+            .navigationTitle("Exercise Bank")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .principal) {
+                                Text("Exercise Bank")
+                                    .font(.largeTitle) // Adjust the font size here
+                            }
+                        }
+            
+            Spacer() 
+            Spacer() // Add a Spacer here to push content up
+        }
+    }
 }

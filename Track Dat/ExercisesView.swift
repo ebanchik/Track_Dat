@@ -8,21 +8,23 @@
 import Foundation
 import SwiftUI
 
-struct ExerciseDetailView: View {
-  let exercise: Exercise
 
-  var body: some View {
-      VStack {
-        Text(exercise.name)
-            .font(.title)
-        Text("Sets: \(exercise.sets)")
-        Text("Reps: \(exercise.reps)")
-        Text("Break Time: \(exercise.break_t ?? "Default Value")")
-        Text("Style: \(exercise.style)")
+struct ExerciseDetailView: View {
+ let exercise: Exercise
+ @EnvironmentObject var splitsViewModel: SplitsViewModel
+
+    var body: some View {
+    VStack {
+     Text(exercise.name)
+         .font(.title)
+     Text("Sets: \(exercise.sets)")
+     Text("Reps: \(exercise.reps)")
+     Text("Break Time: \(exercise.break_t ?? "Default Value")")
+     Text("Style: \(exercise.style)")
     }
     .padding()
-  }
-}
+    }
+   }
 
 struct Exercise: Hashable, Codable, Identifiable {
  let id: Int
@@ -31,6 +33,7 @@ struct Exercise: Hashable, Codable, Identifiable {
  let reps: String
  let break_t: String?
  let style: String
+ var category: ExerciseCategory?
 
  enum CodingKeys: String, CodingKey {
      case id
@@ -39,6 +42,7 @@ struct Exercise: Hashable, Codable, Identifiable {
      case reps
      case break_t
      case style
+     case category
  }
 
  init(from decoder: Decoder) throws {
@@ -164,59 +168,66 @@ class ViewModel: ObservableObject {
 
 }
 
+//struct CategorySelectionView: View {
+//    var exercise: Exercise
+//    @EnvironmentObject var splitsViewModel: SplitsViewModel
+//
+//    var body: some View {
+//        VStack {
+//            Text("Select Category for \(exercise.name)")
+//            Button("Upper 1") {
+//                splitsViewModel.addExercise(exercise, to: .upper1)
+//            }
+//            Button("Upper 2") {
+//                splitsViewModel.addExercise(exercise, to: .upper2)
+//            }
+//            Button("Shoulders") {
+//                splitsViewModel.addExercise(exercise, to: .shoulders)
+//            }
+//            Button("Legs") {
+//                splitsViewModel.addExercise(exercise, to: .legs)
+//            }
+//        }
+//    }
+//}
+
+
 struct ExercisesListView: View {
-  @EnvironmentObject var viewModel: ViewModel
-  @State private var selectedExercise: Exercise? = nil
-  @State private var showingDetail = false
-  
-  var body: some View {
-      NavigationView {
-          Group {
-              if viewModel.isLoading {
-                ProgressView()
-              } else {
-                List {
-                    ForEach(viewModel.exercises, id: \.self) { exercise in
-                        Button(action: {
-                            self.selectedExercise = exercise
-                            self.showingDetail = true
-                        }) {
-                            HStack {
-                               Text(exercise.name)
-                                  .bold()
+    @EnvironmentObject var viewModel: ViewModel
+    @EnvironmentObject var splitsViewModel: SplitsViewModel
+
+    var body: some View {
+        NavigationView {
+            Group {
+                if viewModel.isLoading {
+                    ProgressView()
+                } else {
+                    List {
+                        ForEach(viewModel.exercises, id: \.self) { exercise in
+                            NavigationLink(destination: ExerciseDetailView(exercise: exercise)) {
+                                Text(exercise.name).bold()
                             }
                             .padding(8)
                         }
+                        .onDelete(perform: deleteExercises)
                     }
-                    .onDelete(perform: deleteExercises)
-                }
-                .navigationTitle("Exercises")
-                .onAppear {
-                    if !ProcessInfo.processInfo.arguments.contains("-ui_testing") {
+                    .navigationTitle("Exercises")
+                    .onAppear {
                         viewModel.fetch()
                     }
                 }
-              }
-          }
-          .sheet(item: $selectedExercise) { exercise in
-              ExerciseDetailView(exercise: exercise)
-          }
-          NavigationLink(destination: AddExerciseView().environmentObject(viewModel)) {
-              Image(systemName: "plus")
-                .font(.largeTitle)
-                .padding()
-          }
-          .accentColor(.white)
-          .background(Color.green)
-           }
-       }
-    func deleteExercises(offsets: IndexSet) {
-      offsets.forEach { index in
-          let exercise = viewModel.exercises[index]
-          viewModel.removeExercise(exercise)
-      }
+            }
+        }
     }
-   }
+
+    func deleteExercises(offsets: IndexSet) {
+        offsets.forEach { index in
+            let exercise = viewModel.exercises[index]
+            viewModel.removeExercise(exercise)
+        }
+    }
+}
+
     
 struct AddExerciseView: View {
     @EnvironmentObject var viewModel: ViewModel

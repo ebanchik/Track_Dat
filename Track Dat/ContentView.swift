@@ -20,96 +20,6 @@ struct PlaceholderView: View {
    }
 }
 
-
-//struct SplitsView: View {
-// @EnvironmentObject var splitsViewModel: SplitsViewModel
-// @Binding var selectedSplit: Int
-//
-// var body: some View {
-// NavigationView {
-//    TabView(selection: $selectedSplit) {
-//        Upper1ListView()
-//            .tabItem {
-//             Label("Upper 1", systemImage: "1.lane")
-//            }.tag(0)
-//        
-//        Upper2ListView()
-//            .tabItem {
-//             Label("Upper 2", systemImage: "2.lane")
-//            }.tag(1)
-//        
-//        ShouldersListView()
-//            .tabItem {
-//             Label("Shoulders", systemImage: "3.lane")
-//            }.tag(2)
-//        
-//        LegsListView()
-//            .tabItem {
-//             Label("Legs", systemImage: "4.lane")
-//            }.tag(3)
-//        
-//    }
-//    .toolbar {
-//        ToolbarItem(placement: .principal) {
-//            HStack {
-//               Spacer()
-//               Text(getTitle())
-//                    .font(.system(size: 30))
-//                    .offset(y: 30)
-//                    .underline()
-//               Spacer()
-//            }
-//        }
-//    }
-//    .onAppear {
-//        print("Fetching Upper1")
-//        splitsViewModel.fetchUpper1()
-//        print("Fetching Upper2")
-//        splitsViewModel.fetchUpper2()
-//        print("Fetching Shoulders")
-//        splitsViewModel.fetchShoulders()
-//        print("Fetching Legs")
-//        splitsViewModel.fetchLegs()
-//    }
-//    .onReceive(splitsViewModel.$upper1) { _ in
-//    }
-//    .onReceive(splitsViewModel.$upper2) { _ in
-//    }
-//    .onReceive(splitsViewModel.$shoulders) { _ in
-//    }
-//    .onReceive(splitsViewModel.$legs) { _ in
-//    }
-// }
-// }
-//
-// func getTitle() -> String {
-// switch selectedSplit {
-// case 0:
-//    return "Upper 1"
-// case 1:
-//    return "Upper 2"
-// case 2:
-//    return "Shoulders"
-// case 3:
-//    return "Legs"
-// default:
-//    return ""
-// }
-// }
-//}
-//
-//
-//
-//enum Splits: String, CaseIterable, Identifiable {
-// case upper1 = "Upper 1"
-// case upper2 = "Upper 2"
-// case shoulders = "Shoulders"
-// case legs = "Legs"
-//
-// var id: Self { self }
-//}
-//
-
 struct ContentView: View {
   @StateObject var viewModel = ViewModel()
   @StateObject var splitsViewModel = SplitsViewModel() // StateObject for your ViewModel
@@ -139,12 +49,17 @@ struct ContentView: View {
                             Label("Exercises", systemImage: "list.bullet.clipboard")
                         }
                         .tag(2)
+                        .environmentObject(viewModel)
                 }
                 .navigationBarItems(trailing: addButton)  // Use the addButton view here
                 .sheet(isPresented: $showingAddExerciseView) {
                     AddExerciseView().environmentObject(viewModel)
                 }
             }
+            .onAppear {
+                        viewModel.fetch() // Fetch exercises when ContentView appears
+                    }
+                    .environmentObject(viewModel) // Provide ViewModel as an environment object
         }
      
         // Define the addButton as a computed property
