@@ -77,7 +77,7 @@ struct Upper1ListView: View {
         }
         .navigationTitle("Upper 1 Exercises")
         .toolbar {
-            Button("Add Exercise") {
+            Button("Add") {
                 showingAddExercisesView = true
             }
         }
@@ -118,7 +118,7 @@ struct Upper2ListView: View {
         }
         .navigationTitle("Upper 2 Exercises")
         .toolbar {
-            Button("Add Exercise") {
+            Button("Add") {
                 showingAddExercisesView = true
             }
         }
@@ -156,7 +156,7 @@ struct ShouldersListView: View {
         }
         .navigationTitle("Shoulders Exercises")
         .toolbar {
-            Button("Add Exercise") {
+            Button("Add") {
                 showingAddExercisesView = true
             }
         }
@@ -193,7 +193,7 @@ struct LegsListView: View {
         }
         .navigationTitle("Legs Exercises")
         .toolbar {
-            Button("Add Exercise") {
+            Button("Add") {
                 showingAddExercisesView = true
             }
         }

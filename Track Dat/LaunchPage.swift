@@ -11,13 +11,13 @@ struct LaunchView: View {
     var body: some View {
         VStack(alignment: .center) {
             CircleImage()
-            Text("Track Dat")
+            Text("Split")
                 .font(.largeTitle)
                 .fontWeight(.semibold)
                 .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
                 .offset(y:-15)
             HStack {
-                Text("Finally. Tracking.")
+                Text("Workouts simplified.")
                     .font(.subheadline)
                     .offset(y:-15)
             }

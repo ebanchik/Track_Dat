@@ -21,47 +21,57 @@ struct PlaceholderView: View {
 }
 
 struct ContentView: View {
-  @StateObject var viewModel = ViewModel()
-  @StateObject var splitsViewModel = SplitsViewModel() // StateObject for your ViewModel
-  @State private var selectedTab = 0
-  @State private var selectedSplit = 0
-  @State private var showingAddExerciseView = false
-
+    @StateObject var viewModel = ViewModel()
+    @StateObject var splitsViewModel = SplitsViewModel()
+    @State private var selectedTab = 0
+    @State private var selectedSplit = 0
+    @State private var showingAddExerciseView = false
 
     var body: some View {
-            NavigationView {
-                TabView(selection: $selectedTab) {
-                    HomeView()
-                        .tabItem {
-                            Label("Home", systemImage: "gym.bag.fill")
-                        }
-                        .tag(0)
-                    
-                    SplitsLandingPageView()
-                        .tabItem {
-                            Label("Splits Landing", systemImage: "house.fill")
-                        }
-                        .tag(1)
-                        .environmentObject(splitsViewModel)
-                    
-                    ExercisesListView()
-                        .tabItem {
-                            Label("Exercises", systemImage: "list.bullet.clipboard")
-                        }
-                        .tag(2)
-                        .environmentObject(viewModel)
-                }
-                .navigationBarItems(trailing: addButton)  // Use the addButton view here
-                .sheet(isPresented: $showingAddExerciseView) {
-                    AddExerciseView().environmentObject(viewModel)
-                }
-            }
-            .onAppear {
-                        viewModel.fetch() // Fetch exercises when ContentView appears
+        NavigationView {
+            TabView(selection: $selectedTab) {
+                HomeView()
+                    .tabItem {
+                        Label("Home", systemImage: "gym.bag.fill")
+                            
                     }
-                    .environmentObject(viewModel) // Provide ViewModel as an environment object
+                    .tag(0)
+                    .navigationBarTitle("Home", displayMode: .inline)
+                    .navigationBarHidden(false)
+
+                SplitsLandingPageView()
+                    .tabItem {
+                        Label("Splits Landing", systemImage: "house.fill")
+                    }
+                    .tag(1)
+                
+                    .environmentObject(splitsViewModel)
+                    .navigationBarTitle("Splits Landing", displayMode: .inline)
+                    .navigationBarHidden(false)
+
+                ExercisesListView()
+                    .tabItem {
+                        Label("Exercises", systemImage: "list.bullet.clipboard")
+                    }
+                    .tag(2)
+                    .environmentObject(viewModel)
+                    .navigationBarTitle("Exercises", displayMode: .inline)
+                    .navigationBarHidden(false)
+            }
+            Color.black
+            .navigationBarItems(trailing: addButton)
+            .sheet(isPresented: $showingAddExerciseView) {
+                AddExerciseView().environmentObject(viewModel)
+            }
         }
-     
+        .onAppear {
+            viewModel.fetch()
+        }
+        .environmentObject(viewModel)
+        
+    }
+
+    
         // Define the addButton as a computed property
         private var addButton: some View {
             Group {
@@ -75,6 +85,7 @@ struct ContentView: View {
             }
         }
     }
+
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {

@@ -11,7 +11,9 @@ import SwiftUI
 struct Track_DatApp: App {
     var body: some Scene {
         WindowGroup {
+            LaunchView()
             ContentView()
+            
         }
     }
 }
